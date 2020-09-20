@@ -1,0 +1,9 @@
+options:
+  message:
+    type: string
+    default: "Hello World"
+    description: "A message."
+  enabled:
+    type: boolean
+    default: False
+    description: "Enable or disable something."

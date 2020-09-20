@@ -1,0 +1,76 @@
+#!/usr/bin/env python3
+
+# https://charm-helpers.readthedocs.io/en/latest/
+import os
+import sys
+
+sys.path.insert(0, os.path.join(os.environ['CHARM_DIR'], 'lib'))
+
+from charmhelpers.core import (
+    hookenv,
+    host,
+)
+
+hooks = hookenv.Hooks()
+
+config = hookenv.config()
+
+log = hookenv.log
+
+@hooks.hook('master-service-relation-changed')
+def master_service_relation_changed():
+    """
+    Whenever a change on the wire for the relation is
+    made, this is triggered. 
+    E.g. * New unit arrives
+         * Data values change.
+         * Keys are added.
+    TODO: Is this true also if the data 
+          is changed from outside of this hook within the same unit?
+          - Seems not?
+    
+    TODO: If a value is set to the same value, will this trigger this?
+
+    When we set "enabled" = False, 
+    we let all relations know this so they can
+    stop set operational => False.
+    """
+
+    # For the master-service relation, get all relation_ids
+    rel_ids = hookenv.relation_ids('master-service')
+
+    log("=> rids: {}".format(str(rel_ids)))
+
+    for rel_id in rel_ids:
+        # local_relation = hookenv.relation_get(
+        #    unit=hookenv.local_unit(), rid=relation_id)
+        # relation_id = hookenv.relation_id()
+        log("====> r_id: {}".format(rel_id))
+
+        # Set first our relation data
+        hookenv.relation_set(rel_id,
+                             {'message' : config['message'],
+                              'master-enabled' : config['enabled']
+                              })
+
+        n_workers = 0
+        n_operational = 0
+        for unit in hookenv.related_units(rel_id):
+            n_workers += 1
+            
+            r = hookenv.relation_get(unit=unit, rid=rel_id)
+
+            op = r['operational']
+            
+            if op:
+                log(f"========== OPERATIONAL {op} ============")
+                n_operational += 1
+            else:
+                log("====> worker-ready: No value yet.")
+        
+        hookenv.status_set("active", f"Workers: {n_workers}, Oper: {n_operational}")
+            
+if __name__ == "__main__":
+    # execute a hook based on the name the program is called by
+    # In this case, its master-relation-joined
+    hooks.execute(sys.argv)

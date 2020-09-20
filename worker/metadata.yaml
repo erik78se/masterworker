@@ -1,0 +1,17 @@
+name: worker
+summary: Worker component charm, related to master
+maintainer: Lonroth Erik <erik.lonroth@gmail.com>
+series:
+  - focal
+  - bionic
+description: |
+  Education
+tags:
+  - misc
+  - education
+
+subordinate: false
+
+requires:
+  master:
+    interface: simian

@@ -1,0 +1,17 @@
+name: master
+summary: Master component charm
+maintainer: Lonroth Erik <erik.lonroth@gmail.com>
+series:
+  - focal
+  - bionic
+description: |
+  Education
+tags:
+  - misc
+  - education
+
+subordinate: false
+
+provides:
+  master-service:
+    interface: simian

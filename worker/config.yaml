@@ -1,0 +1,9 @@
+options:
+  worker-name:
+    type: string
+    default: "The Worker"
+    description: "Name of the worker service."
+  worker-enabled:
+    type: boolean
+    default: False
+    description: "This worker is active or not."

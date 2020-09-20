@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+
+# https://charm-helpers.readthedocs.io/en/latest/
+import os
+import sys
+
+sys.path.insert(0, os.path.join(os.environ['CHARM_DIR'], 'lib'))
+
+from charmhelpers.core import (
+    hookenv,
+    host,
+)
+
+hooks = hookenv.Hooks()
+
+log = hookenv.log
+
+@hooks.hook('master-relation-joined')
+def master_relation_joined():
+
+    relation_id = hookenv.relation_id()
+
+    log("Unit {} joined".format(relation_id))
+
+if __name__ == "__main__":
+    # execute a hook based on the name the program is called by
+    # In this case, its master-relation-joined
+    hooks.execute(sys.argv)
