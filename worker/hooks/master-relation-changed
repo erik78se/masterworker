@@ -1,57 +1,35 @@
 #!/usr/bin/env python3
-
-# https://charm-helpers.readthedocs.io/en/latest/
 import os
 import sys
-
 sys.path.insert(0, os.path.join(os.environ['CHARM_DIR'], 'lib'))
+import hookenv
 
-from charmhelpers.core import (
-    hookenv,
-    host,
-)
+def writeWorkerkeyFile(workerkey):
+    """ Write the workerkey to file in the charm directory,
+    indicating the service is related to the master """
+    WorkerKeyFile = open("WORKERKEY.file", 'w')
+    WorkerKeyFile.write(workerkey)
+    WorkerKeyFile.close()
 
 
-hooks = hookenv.Hooks()
-
-config = hookenv.config()
-
-log = hookenv.log
-
-@hooks.hook('master-relation-changed')
 def master_relation_changed():
 
-    relation_id = hookenv.relation_id()
+    if not hookenv.relation_get('worker-key'):
 
-    if not hookenv.relation_get('master-enabled'):
-
-        hookend.status_set("waiting", "Master not ready.")
+        hookenv.status_set("waiting", "worker-key not available on the relation.")
 
     else:
 
-        log(" ========= REL ========")
-        
-        msg = hookenv.relation_get('message')
+        hookenv.log(" ========= WORKER KEY AVAILABE  ========")
 
-        # Do something with the data ...
-        
-        hookenv.status_set("active", f"Master say: {msg}")
-        
-        # If we have a healthy relation, let the relation know.
-        if config['worker-enabled']:
+        workerKey = hookenv.relation_get('worker-key')
 
-            hookenv.relation_set(relation_id,
-                                 {'operational' : True })
-        else:
-            
-            hookenv.relation_set(relation_id,
-                                 {'operational' : False })
-        
+        # Do the work of setting up the service.
+        writeWorkerkeyFile(workerKey)
 
-        relations = hookenv.relations()
-        log(str(relations))
+        # Perhaps do some checks here to see that we are all good?
+
+        hookenv.status_set("active", f"WorkerKey: {workerKey}")
     
 if __name__ == "__main__":
-    # execute a hook based on the name the program is called by
-    # In this case, its master-relation-joined
-    hooks.execute(sys.argv)
+    master_relation_changed()

@@ -1,40 +1,13 @@
 #!/usr/bin/env python3
-
 import os
 import sys
-
 sys.path.insert(0, os.path.join(os.environ['CHARM_DIR'], 'lib'))
+import hookenv
 
-from charmhelpers.core import (
-    hookenv,
-    host,
-)
-
-hooks = hookenv.Hooks()
-
-log = hookenv.log
-
-@hooks.hook('config-changed')
 def config_changed():
-    config = hookenv.config()
-
-    for key in config:
-        if config.changed(key):
-            log("config['{}'] changed from {} to {}".format(
-                key, config.previous(key), config[key]))
-
-    # If anything happens to our config, also update relations
-    # is this really good?
-    for relation_id in hookenv.relation_ids('master'):
-        
-        hookenv.relation_set(relation_id,
-                             {'worker-name' : config['worker-name'],
-                              'operational' : config['worker-enabled']
-                              })
-        
-    config.save()
-
+    """ Our workers dont have any config. The information it needs
+     (master address) is delivered to the worker via the relation """
+    pass
 
 if __name__ == "__main__":
-    # execute a hook based on the name the program is called by
-    hooks.execute(sys.argv)
+    config_changed()

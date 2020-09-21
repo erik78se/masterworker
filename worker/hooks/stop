@@ -1,26 +1,11 @@
 #!/usr/bin/env python3
-
 import os
 import sys
-
 sys.path.insert(0, os.path.join(os.environ['CHARM_DIR'], 'lib'))
+import hookenv
 
-from charmhelpers.core import (
-    hookenv,
-    host,
-)
-
-hooks = hookenv.Hooks()
-log = hookenv.log
-
-SERVICE = 'charm-master'
-
-
-@hooks.hook('stop')
 def stop():
-    host.service_stop(SERVICE)
-
+    hookenv.log("=========== hook: stop ===========")
 
 if __name__ == "__main__":
-    # execute a hook based on the name the program is called by
-    hooks.execute(sys.argv)
+    stop()

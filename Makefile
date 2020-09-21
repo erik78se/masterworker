@@ -3,6 +3,7 @@ export PATH := /snap/bin:$(PATH)
 export CHARM_NAME_MASTER := master
 export CHARM_NAME_WORKER := worker
 export CHARM_BUILD_DIR := ./builds
+
 # TARGETS
 
 lint: ## Run linter

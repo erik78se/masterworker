@@ -1,0 +1,2 @@
+# The charm needs this to work
+charmhelpers==0.20.17

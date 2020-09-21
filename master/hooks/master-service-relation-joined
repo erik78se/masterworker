@@ -1,31 +1,27 @@
 #!/usr/bin/env python3
-
-# https://charm-helpers.readthedocs.io/en/latest/
 import os
 import sys
-
 sys.path.insert(0, os.path.join(os.environ['CHARM_DIR'], 'lib'))
+import hookenv
+import random
 
-from charmhelpers.core import (
-    hookenv,
-    host,
-)
+def generateWorkerKey():
+    """Return a random key of length 4,
+    which will be passed as new workers join."""
+    return ''.join(random.choice('0123456789ABCDEF') for i in range(4))
 
-hooks = hookenv.Hooks()
-
-log = hookenv.log
-
-@hooks.hook('master-service-relation-joined')
 def master_service_relation_joined():
 
     relation_id = hookenv.relation_id()
 
-    log("Unit {} joined".format(relation_id))
+    hookenv.log(f"=========== JOINED new relation {relation_id} =============")
 
-    # Lets provide our service_name as a key-value pair
-    hookenv.relation_set(relation_id, {'service_name' : "BOOOOM"})
-    
+    _wk = generateWorkerKey()
+
+    relation_data = { 'worker-key': _wk }
+    # Pick this up in 'relation-changed' hook on the other side
+    hookenv.relation_set(relation_id,
+                         relation_settings=relation_data )
+
 if __name__ == "__main__":
-    # execute a hook based on the name the program is called by
-    # In this case, its master-relation-joined
-    hooks.execute(sys.argv)
+    master_service_relation_joined()

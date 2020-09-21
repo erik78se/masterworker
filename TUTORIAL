@@ -1,0 +1,34 @@
+# Implementing a Master Worker pattern with Juju Relations
+
+# Python & hook-tools
+  * Explain juju help-tools <hook-tools>
+
+# Master worker pattern
+ * Describe the pattern.
+ * Make sure to have read: https://discourse.juju.is/t/the-lifecycle-of-charm-relations/1050
+ * Joining
+    - Learn that only the key-value pair: private-address is available at the "relation-join" event.
+    -
+ * Exchanging information (relation-change)
+ * Adding more units
+ * Departing
+ * The last unit to depart:
+  - the final unit to depart a relation marked for termination is responsible
+    for destroying the relation and all associated data.
+
+ * Relation
+ [unit]:relation-name:id: <----interface-name---> id:relation-name:[unit]
+                          <----interface-name---> id:relation-name:[unit]
+
+* Introspect
+$ juju run --unit master/0 "relation-ids master-service"
+worker:0
+
+$  juju run --unit master/0 "relation-list -r worker:0"
+master/0
+
+$ juju run --unit master/0 "relation-get -r master-service:0 - master/0"
+egress-subnets: 172.31.37.37/32
+ingress-address: 172.31.37.37
+private-address: 172.31.37.37
+worker-key: 0845

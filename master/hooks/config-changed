@@ -1,73 +1,23 @@
 #!/usr/bin/env python3
-
 import os
 import sys
-
-# Find charmhelpers
 sys.path.insert(0, os.path.join(os.environ['CHARM_DIR'], 'lib'))
+import hookenv
 
-from charmhelpers.core import (
-    hookenv,
-    host,
-)
-
-log = hookenv.log
-
-hooks = hookenv.Hooks()
-
-@hooks.hook('config-changed')
 def config_changed():
+
     config = hookenv.config()
 
-    for key in config:
-        if config.changed(key):
-            log("config['{}'] changed from {} to {}".format(
-                key, config.previous(key), config[key]))
-
-    # Save the config, why? Here?
-    config.save()
-    
-    # We let all relations on the master relation
-    # to us know that we are not enabled.
-    if config.changed('enabled'):
-
+    if config.changed('message'):
+        # change message for all workers
         for relation_id in hookenv.relation_ids('master-service'):
 
-            log("============= PASSAGE =============")
+            relation_data = {'message': config['message']}
 
-            if config['enabled']:
-                
-                hookenv.relation_set(relation_id,
-                                     {'message' : config['message'],
-                                      'master-enabled' : config['enabled']
-                                      })
-                
-            else:
+            hookenv.relation_set(relation_id, relation_settings=relation_data)
 
-                hookenv.relation_set(relation_id,
-                                     {'message' : "OFFLINE",
-                                      'master-enabled' : config['enabled']
-                                      })
-                
-            relations = hookenv.relations()
-            log(str(relations))
-
-#    relations = hookenv.relations()
-
-#{'master-service':                                    --> relation(name)
-# {'master-service:1':                                 --> relation(id)
-#  {'master/1': {'egress-subnets': '10.104.139.19/32', --> relation data
-#                'ingress-address': '10.104.139.19',
-#                'private-address': '10.104.139.19'},
-#   'worker/2': {'egress-subnets': '10.104.139.18/32',
-#                'ingress-address': '10.104.139.18',
-#                'private-address': '10.104.139.18'}}}}
-
-#    log(str(relations))
-
- 
-    
+    # Save the new/current config to disk.
+    config.save()
 
 if __name__ == "__main__":
-    # execute a hook based on the name the program is called by
-    hooks.execute(sys.argv)
+    config_changed()
