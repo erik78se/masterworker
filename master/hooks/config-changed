@@ -5,19 +5,11 @@ sys.path.insert(0, os.path.join(os.environ['CHARM_DIR'], 'lib'))
 import hookenv
 
 def config_changed():
+    """
+    We let the log know the message was changed.
+    """
+    hookenv.log(" ========= hook: config-changed  ========")
 
-    config = hookenv.config()
-
-    if config.changed('message'):
-        # change message for all workers
-        for relation_id in hookenv.relation_ids('master-service'):
-
-            relation_data = {'message': config['message']}
-
-            hookenv.relation_set(relation_id, relation_settings=relation_data)
-
-    # Save the new/current config to disk.
-    config.save()
 
 if __name__ == "__main__":
     config_changed()

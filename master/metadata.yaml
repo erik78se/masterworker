@@ -1,16 +1,19 @@
 name: master
-summary: Master component charm
+summary: |
+  The master charm educate charmers in juju relations.
 maintainer: Lonroth Erik <erik.lonroth@gmail.com>
 series:
   - focal
   - bionic
 description: |
-  Education
+  The master charm generates a unique four character long key
+  and makes that available on the relation with joning workers.
+  It demonstrates a master-worker pattern implemented with juju.
 tags:
   - misc
   - education
 subordinate: false
-
 provides:
   master-service:
     interface: simian
+    limit: 1

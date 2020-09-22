@@ -551,6 +551,19 @@ def expected_peer_units():
     return (key for key in _goal_state['units']
             if '/' in key and key != local_unit())
 
+def function_get(key=None):
+    """Gets the value of an action parameter, or all key/value param pairs"""
+    cmd = ['function-get']
+    # Fallback for older charms.
+    if not cmd_exists('function-get'):
+        cmd = ['action-get']
+
+    if key is not None:
+        cmd.append(key)
+    cmd.append('--format=json')
+    function_data = json.loads(subprocess.check_output(cmd).decode('UTF-8'))
+    return function_data
+
 
 def expected_related_units(reltype=None):
     """Get a generator for units we expect to join relation based on

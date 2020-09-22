@@ -13,23 +13,43 @@ def writeWorkerkeyFile(workerkey):
 
 
 def master_relation_changed():
+    """
+    This hook is called when data changes on the relation
+    from remote units and where we can access those.
 
-    if not hookenv.relation_get('worker-key'):
+    juju relate master worker
+         ->(created)->
+                      (joined)->
+                                (changed)->
+
+    This is where we access the worker-key provided by the master which
+    we should now have available on the relation.
+    """
+    hookenv.log(" ========= hook: master-relation-changed  ========")
+
+    localunitname = os.environ['JUJU_UNIT_NAME']
+
+    if not hookenv.relation_get(f"{localunitname}-worker-key"):
 
         hookenv.status_set("waiting", "worker-key not available on the relation.")
 
     else:
 
-        hookenv.log(" ========= WORKER KEY AVAILABE  ========")
+        # Get the key with our worker name on it, e.g.: 'worker/0-worker-key'
+        workerKey = hookenv.relation_get(f"{localunitname}-worker-key")
 
-        workerKey = hookenv.relation_get('worker-key')
-
-        # Do the work of setting up the service.
+        # Create a file on the unit with our content.
         writeWorkerkeyFile(workerKey)
 
-        # Perhaps do some checks here to see that we are all good?
-
+        # Show the key in the status message for the unit.
         hookenv.status_set("active", f"WorkerKey: {workerKey}")
-    
+
+        masterUnitName = os.environ['JUJU_REMOTE_UNIT']
+
+        masterMessage = hookenv.relation_get('message', unit=masterUnitName)
+
+        hookenv.log(f"MASTER message: {masterMessage}")
+
+
 if __name__ == "__main__":
     master_relation_changed()

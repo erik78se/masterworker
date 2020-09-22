@@ -4,11 +4,11 @@ import sys
 sys.path.insert(0, os.path.join(os.environ['CHARM_DIR'], 'lib'))
 import hookenv
 
-def config_changed():
+def master_relation_broken():
     """
     Lets not do anything here now but let the log know we passed through.
     """
-    hookenv.log("=========== hook: config-changed ===========")
+    hookenv.log(" ========= hook: master-relation-broken  ========")
 
 if __name__ == "__main__":
-    config_changed()
+    master_relation_broken()

@@ -434,6 +434,18 @@ def config(scope=None):
             .format(config_cmd_line, str(e)), level=ERROR)
         return None
 
+def function_get(key=None):
+    """Gets the value of an action parameter, or all key/value param pairs"""
+    cmd = ['function-get']
+    # Fallback for older charms.
+    if not cmd_exists('function-get'):
+        cmd = ['action-get']
+
+    if key is not None:
+        cmd.append(key)
+    cmd.append('--format=json')
+    function_data = json.loads(subprocess.check_output(cmd).decode('UTF-8'))
+    return function_data
 
 @cached
 def relation_get(attribute=None, unit=None, rid=None):

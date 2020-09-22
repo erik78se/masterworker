@@ -5,7 +5,10 @@ sys.path.insert(0, os.path.join(os.environ['CHARM_DIR'], 'lib'))
 import hookenv
 
 def install():
-    hookenv.log('Installing charm: worker ')
+    """
+    Lets not do anything here now but let the log know we passed through.
+    """
+    hookenv.log("=========== hook: install ===========")
 
 if __name__ == "__main__":
     install()

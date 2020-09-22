@@ -1,5 +1,1 @@
-options:
-  message:
-    type: string
-    default: "Get to work!"
-    description: "A message from the master."
+options: {}

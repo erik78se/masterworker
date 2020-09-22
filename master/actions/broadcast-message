@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+import os
+import sys
+sys.path.insert(0, os.path.join(os.environ['CHARM_DIR'], 'lib'))
+import hookenv
+
+# This action "broadcasts" a message by setting the message key value on
+# the master-service relation. All related worker units picks this up
+# via the relation-changed hook.
+
+# If the message don't differ from the previous message, nothing happens since
+# the value on the relation remains unchanged.
+
+# $ juju run-action master/0 broadcast-message message="Hello World" --wait
+
+hookenv.log(" ========= action: broadcase-message  ========")
+
+relation_id = hookenv.relation_ids('master-service')[0]
+
+_message = hookenv.function_get('message')
+
+relation_data = { 'message': _message }
+
+hookenv.relation_set(relation_id,
+                     relation_settings=relation_data)

@@ -6,42 +6,28 @@ import hookenv
 
 def master_service_relation_changed():
     """
-    Whenever a change on the wire for the relation is made,
-    this hook is triggered.
-    E.g. * New unit arrives (after the relation-joined hook has run)
-         * Data values change.
-         * Keys are added.
+    This hook is called when data changes on the relation
+    from remote units and where we can access those.
+
+    juju relate master worker
+         ->(created)->
+                      (joined)->
+                                (changed)->
     """
+    hookenv.log(" ========= hook: master-service-relation-changed  ========")
+
     # For the master-service relation, get all relation_ids
+    # TODO: dont use the name since we are in a relation
     rel_ids = hookenv.relation_ids('master-service')
 
-    hookenv.log("=> rids: {}".format(str(rel_ids)))
+    # Get the first one since we expect to only have one master-service relation.
+    master_service_rel_id = rel_ids[0]
 
-    for rel_id in rel_ids:
-        # local_relation = hookenv.relation_get(
-        #    unit=hookenv.local_unit(), rid=relation_id)
-        # relation_id = hookenv.relation_id()
-        hookenv.log("====> r_id: {}".format(rel_id))
+    # Get all the related units
+    units = hookenv.related_units(master_service_rel_id)
 
-        n_workers = 0
-
-        n_operational = 0
-
-        for unit in hookenv.related_units(rel_id):
-
-            n_workers += 1
-            
-            r = hookenv.relation_get(unit=unit, rid=rel_id)
-
-            op = ['operational']
-            
-            if op:
-                hookenv.log(f"========== OPERATIONAL {op} ============")
-                n_operational += 1
-            else:
-                hookenv.log("====> worker-ready: No value yet.")
-        
-        hookenv.status_set("active", f"Workers: {n_workers}, Oper: {n_operational}")
+    # Show how many related units we have.
+    hookenv.status_set("active", f"Related Workers: {len(units)}")
             
 if __name__ == "__main__":
     master_service_relation_changed()

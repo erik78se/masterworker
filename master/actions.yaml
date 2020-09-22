@@ -1,0 +1,6 @@
+broadcast-message:
+  description: The message to broadcast via relations.
+  params:
+    message:
+      type: string
+      description: The message as a string.

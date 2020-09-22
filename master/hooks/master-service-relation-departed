@@ -5,9 +5,11 @@ sys.path.insert(0, os.path.join(os.environ['CHARM_DIR'], 'lib'))
 import hookenv
 
 def master_service_relation_departed():
-    relation_id = hookenv.relation_id()
-    hookenv.log(f"=========== DEPARTED on relation {relation_id} =============")
-    pass
+    """
+
+    """
+
+    hookenv.log(" ========= hook: master-service-relation-departed  ========")
 
 if __name__ == "__main__":
     master_service_relation_departed()

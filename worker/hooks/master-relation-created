@@ -1,0 +1,23 @@
+#!/usr/bin/env python3
+import os
+import sys
+sys.path.insert(0, os.path.join(os.environ['CHARM_DIR'], 'lib'))
+import hookenv
+
+def master_relation_created():
+    """
+    This hook is called before the remote unit is up and before master-relation-joined.
+
+    juju relate master worker
+         ->(created)->
+                      (joined)->
+                                (changed)->
+    """
+
+    hookenv.log(" ========= hook: master-relation-created  ========")
+
+    # Lets not do anything here.
+    pass
+
+if __name__ == "__main__":
+    master_relation_created()
