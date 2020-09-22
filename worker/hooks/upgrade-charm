@@ -5,7 +5,10 @@ sys.path.insert(0, os.path.join(os.environ['CHARM_DIR'], 'lib'))
 import hookenv
 
 def upgrade_charm():
-    hookenv.log('Upgrading charm-master')
+    """
+    Lets not do anything here now but let the log know we passed through.
+    """
+    hookenv.log(" ========= hook: upgrade-charm  ========")
 
 if __name__ == "__main__":
     upgrade_charm()

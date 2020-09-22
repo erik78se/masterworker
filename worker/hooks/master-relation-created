@@ -13,11 +13,8 @@ def master_relation_created():
                       (joined)->
                                 (changed)->
     """
-
     hookenv.log(" ========= hook: master-relation-created  ========")
 
-    # Lets not do anything here.
-    pass
 
 if __name__ == "__main__":
     master_relation_created()

@@ -10,5 +10,6 @@ def master_relation_broken():
     """
     hookenv.log(" ========= hook: master-relation-broken  ========")
 
+
 if __name__ == "__main__":
     master_relation_broken()
