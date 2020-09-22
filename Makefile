@@ -21,7 +21,7 @@ build-worker: clean lint ## Build charm
 
 build: build-master build-worker
 
-clean: ## Remove .tox and build dirs
+clean: ## build dirs
 	find . -name '*~' | xargs rm 
 	rm -rf $(CHARM_BUILD_DIR)
 
