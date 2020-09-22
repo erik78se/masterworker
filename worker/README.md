@@ -2,7 +2,7 @@
 The **worker** - is an educational charm.
 
 The worker retrieves data exchanged from master 
-as a four character value (XYZW), assigned to a key named: *<worker-unit-name>-worker-key*.
+as a four character value (XYZW), assigned to a key named: *unitname-worker-key*.
  
 This makes it possible for the worker unit to access its individual data by using its local unit name. 
 

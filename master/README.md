@@ -9,7 +9,7 @@ to demonstrate how data is exchanged from the master
 with related workers.
 
 The data exchanged from master is a four character value (XYZW), 
-assigned to a key named: *<worker-unit-name>-worker-key*.
+assigned to a key named: *unitname-worker-key*.
  
 This makes it possible for workers to access its individual data. 
 Effectively implementing the master-worker pattern.
