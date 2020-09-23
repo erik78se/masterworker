@@ -16,5 +16,5 @@ machines:
   "1": {}
   "2": {}
 relations:
-- - master:master-service
+- - master:master-application
   - worker:master

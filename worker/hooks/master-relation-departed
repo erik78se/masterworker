@@ -18,7 +18,8 @@ def master_relation_departed():
     guarantees above; but within those constraints, it will run the fewest possible hooks to notify the charm of the
     departure of each remote unit.
 
-    Once all necessary -departed hooks have been run for such a relation, the unit agent will run the final relation hook:
+    Once all necessary -departed hooks have been run for such a relation, the unit agent will run the final relation
+    hook: [name]-relation-broken
     """
 
     hookenv.log(" ========= hook: master-relation-departed  ========")

@@ -4,7 +4,7 @@ import sys
 sys.path.insert(0, os.path.join(os.environ['CHARM_DIR'], 'lib'))
 import hookenv
 
-def master_service_relation_broken():
+def master_application_relation_broken():
     """
     https://discourse.juju.is/t/charm-hooks/1040
 
@@ -20,8 +20,8 @@ def master_service_relation_broken():
     And, again, it’s important to internalise the fact that there may be multiple runtime relations in play with the
     same name, and that they’re independent: one -broken hook does not mean that every such relation is broken.
     """
-    hookenv.log(" ========= hook: master-service-relation-broken  ========")
+    hookenv.log(" ========= hook: master-application-relation-broken  ========")
 
 
 if __name__ == "__main__":
-    master_service_relation_broken()
+    master_application_relation_broken()

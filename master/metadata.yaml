@@ -14,6 +14,6 @@ tags:
   - education
 subordinate: false
 provides:
-  master-service:
+  master-application:
     interface: simian
     limit: 1

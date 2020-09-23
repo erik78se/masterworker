@@ -10,7 +10,7 @@ def generateWorkerKey():
     which will be passed as new workers join."""
     return ''.join(random.choice('0123456789ABCDEF') for i in range(4))
 
-def master_service_relation_joined():
+def master_application_relation_joined():
     """
     https://discourse.juju.is/t/charm-hooks/1040
 
@@ -31,7 +31,7 @@ def master_service_relation_joined():
     and sets it on the relation.
     """
 
-    hookenv.log(" ========= hook: master-service-relation-joined  ========")
+    hookenv.log(" ========= hook: master-application-relation-joined  ========")
 
     # Generate a key
     _wk = generateWorkerKey()
@@ -47,4 +47,4 @@ def master_service_relation_joined():
                          relation_settings=relation_data )
 
 if __name__ == "__main__":
-    master_service_relation_joined()
+    master_application_relation_joined()

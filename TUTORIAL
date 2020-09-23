@@ -27,16 +27,16 @@
 
 * Inspecting the relations
 
-$ juju run --unit master/0 "relation-ids master-service"
-master-service:0
+$ juju run --unit master/0 "relation-ids master-application"
+master-application:0
 
 # Remove and add back the relation to see how the relation-id changes from
-# master-service:0 to master-service:1
+# master-application:0 to master-application:1
 $ juju remove-relation master worker
 $ juju relate master worker
 
-$ juju run --unit master/0 'relation-ids master-service'
-master-service:1
+$ juju run --unit master/0 'relation-ids master-application'
+master-application:1
 
 $ juju run --unit worker/0 'relation-get -r master:1 - master/0'
 egress-subnets: 172.31.27.134/32
@@ -44,13 +44,13 @@ ingress-address: 172.31.27.134
 private-address: 172.31.27.134
 worker/0-worker-key: "5914"
 worker/1-worker-key: ADA1
-$ juju run --unit master/0 'relation-get -r master-service:1 - worker/0'
+$ juju run --unit master/0 'relation-get -r master-application:1 - worker/0'
 egress-subnets: 172.31.35.128/32
 ingress-address: 172.31.35.128
 private-address: 172.31.35.128
 
 # Get individial keys: (relation-get -r <relation-id> <key> <unit>, if "-", get all keys)
-$ juju run --unit master/0 "relation-get -r master-service:1 worker/1-worker-key master/0"
+$ juju run --unit master/0 "relation-get -r master-application:1 worker/1-worker-key master/0"
 ADA1
 
  * Adding more units
@@ -61,23 +61,23 @@ ADA1
     for destroying the relation and all associated data.
 
 * Relation
- [master/0 has master-service:1] <---- simian ---> [master:1 has worker/0]
+ [master/0 has master-application:1] <---- simian ---> [master:1 has worker/0]
                                  <---- simian ---> [master:1 has worker/1]
 
 * Introspect
-$ juju run --unit master/0 "relation-ids master-service"
-master-service:0
+$ juju run --unit master/0 "relation-ids master-application"
+master-application:0
 
-$ juju run --unit master/0 "relation-list -r master-service:1"
+$ juju run --unit master/0 "relation-list -r master-application:1"
 worker/0
 worker/1
 
 $ juju run --unit worker/0 "relation-list -r master:1"
 master/0
 
-# Look at the relation data for the master-service on the master/0 side.
+# Look at the relation data for the master-application on the master/0 side.
 # where we would expect to see the worker-keys.
-$ juju run --unit master/0 "relation-get -r master-service:1 - master/0"
+$ juju run --unit master/0 "relation-get -r master-application:1 - master/0"
 egress-subnets: 172.31.27.134/32
 ingress-address: 172.31.27.134
 private-address: 172.31.27.134
@@ -85,7 +85,7 @@ worker/0-worker-key: "5914"
 worker/1-worker-key: ADA1
 
 # Look at the worker/0 side of the same relation. Where the keys shouldn't be
-$ juju run --unit master/0 "relation-get -r master-service:1 - worker/0"
+$ juju run --unit master/0 "relation-get -r master-application:1 - worker/0"
 egress-subnets: 172.31.35.128/32
 ingress-address: 172.31.35.128
 private-address: 172.31.35.128
