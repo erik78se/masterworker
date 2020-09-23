@@ -8,6 +8,8 @@ def master_relation_created():
     """
     This hook is called before the remote unit is up and before master-relation-joined.
 
+    #TODO: This hook lacks official documentation.
+
     juju relate master worker
          ->(created)->
                       (joined)->

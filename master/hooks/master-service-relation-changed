@@ -6,8 +6,14 @@ import hookenv
 
 def master_service_relation_changed():
     """
-    This hook is called when data changes on the relation
-    from remote units and where we can access those.
+    https://discourse.juju.is/t/charm-hooks/1040
+
+    [name]-relation-changed is always run once, after -joined, and will subsequently be run whenever that remote unit
+    changes its settings for the relation. It should be the only hook that relies upon remote relation settings from
+    relation-get, and it should not error if the settings are incomplete: you can guarantee that when the remote unit
+    changes its settings, the hook will be run again.
+
+    The settings that you can get, and that you should set, are determined by the relation’s interface.
 
     juju relate master worker
          ->(created)->

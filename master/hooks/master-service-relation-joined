@@ -12,11 +12,15 @@ def generateWorkerKey():
 
 def master_service_relation_joined():
     """
-    This hook is called when the unit is up and we can access its
-    private-address, but interface data from remote units are not to be
-    expected to be available at this stage.
-    Its however a good place to start populating the data we want to
-    publish to other units joining up to the relation.
+    https://discourse.juju.is/t/charm-hooks/1040
+
+    [name]-relation-joined is run only when that remote unit is first observed by the unit.
+    It should be used to relation-set any local unit settings that can be determined using no more than the name of the
+    joining unit and the remote private-address setting, which is always available when the relation is created and is
+    by convention not deleted.
+
+    You should not depend upon any other relation settings in the -joined hook because they’re not guaranteed to be
+    present; if you need more information you should wait for a -changed hook that presents the right information.
 
     $ juju relate master worker
          ->(created)->
