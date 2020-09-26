@@ -17,9 +17,11 @@ hookenv.log(" ========= action: broadcase-message  ========")
 
 relation_id = hookenv.relation_ids('master-application')[0]
 
-_message = hookenv.function_get('message')
+# Get the message from the juju function/action
+message = hookenv.function_get('message')
 
-relation_data = { 'message': _message }
+relation_data = { 'message': message }
 
+# ... set the relational data.
 hookenv.relation_set(relation_id,
                      relation_settings=relation_data)

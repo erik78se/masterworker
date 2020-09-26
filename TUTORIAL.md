@@ -134,55 +134,68 @@ The hook-tools involved in passing that was "relation-set" and
 
 The master "set" some values, and the "workers" have "get" them.
 
-So, when is this happening and what triggers it?
+Lets see when its triggered and the code for it.
 
 # Relational hooks
 
 When the command:
  ```juju relate master worker```
-is ran a specific set of hooks are triggerd by the juju engine.
+is ran, it triggers a specific set of hooks on all units
+involved in the relation. Those are the "relational hooks". 
+The picture below shows how these relational hooks are called 
+and in what order.
 
-Those are the "relational hooks". The picture below shows how
-these relational hooks are called and in what order.
-
-Here is where the master set the data in the "master-application-relation-joined":
+Here is the master:s "master-application-relation-joined":
 
 [code] -> https://github.com/erik78se/masterworker/blob/master/master/hooks/master-application-relation-joined
 
-and in the worker gets it in "master-relation-changed":
+and the worker:s "master-relation-changed":
 
 [code] -> https://github.com/erik78se/masterworker/blob/master/worker/hooks/master-relation-changed
 
-This is the juju relational magic unveiled. This is how data is exchanged in relations.
+This is how data is exchanged in relations.
 
+Now, knowing the details of relational hooks is absolutely 
+FUNDAMENTAL to understand charms with relations.
 
-
-Now, knowing the details of these relational hooks is absolutely 
-FUNDAMENTAL to be able to understand charms with relations.
-
-If you have not studied this yet, juju will remain magic to you forever.
-If you want to become a Jedi, you should grab a coffee and study this 
-carefully.
-
-You may not pass here until you have done so.
+If you have not studied this, juju will remain magic to you.
+If you want to become a Juju Jedi, you should grab a coffee and read 
+this carefully.
  
 ## The relation event cycle
-Before we go into the details of
+Below is the relational state machine. 
 [picture]
 
 
+### Exchanging information (relation-change) with units
+When a change on a relation occurs, E.g. a unit calls "relation-set", 
+ALL related units will get notified and fire the relation-change hook.
+     
+In a way, juju broadcasts relational data to all units when relation changes.
 
- * Joining
-    - Learn that only the key-value pair: private-address is available at the "relation-join" event.
-    -
- * Exchanging information (relation-change)
-   - When a change on a relation data occurs, ALL related units will fire their
-     relation-change events and have access to ALL data in that relation dictionary.
-     There exist no means to have a single unit be unicasted that event.
-     In a sense, juju multicasts relational data all the time. The only way to
-     hand out data to a single unit, is to have a key-name on the relation data
-     which links the unit to its own value. We will use that in the master-worker
-     tutorial.
+The juju function/action, demonstrates this:
+
+https://github.com/erik78se/masterworker/blob/master/master/actions/broadcast-message
+
+If you run the action and watch the "juju debug-log" you will see all units
+logging the message sent.
+
+Isn't this cool?
+
+But, how do we send out unique data to units?
+
+### Communicating unit unique data
+The data exchanged on a relation is a dictionary. So, one way to hand out 
+data for an individual units, is to have a key-name on the relation data
+composed of the unit-name.
+
+This way, we knows what data we should set or get, based on 
+the unit name which is always available to us.
+
+Look at the code in the worker: 
+https://github.com/erik78se/masterworker/blob/master/worker/hooks/master-relation-changed
+
+
 
 * Inspecting the relations
 

@@ -27,28 +27,32 @@ def master_relation_changed():
          ->(created)->
                       (joined)->
                                 (changed)->
-
-    This is where we access the worker-key provided by the master which
-    we should now have available on the relation.
     """
     hookenv.log(" ========= hook: master-relation-changed  ========")
 
     localunitname = os.environ['JUJU_UNIT_NAME']
 
-    if not hookenv.relation_get(f"{localunitname}-worker-key"):
-
-        hookenv.status_set("waiting", "worker-key not available on the relation.")
-
-    else:
+    ## If we have data that belong to this unit
+    if hookenv.relation_get(f"{localunitname}-worker-key"):
 
         # Get the key with our worker name on it, e.g.: 'worker/0-worker-key'
         workerKey = hookenv.relation_get(f"{localunitname}-worker-key")
 
-        # Create a file on the unit with our content.
+        # As a dummy operation, we create a file on the unit with the key.
+        # This would be an example of doing something useful with the
+        # data retrieved on the relation. Such as rendering a config
+        # or doing something useful with data from the relation.
         writeWorkerkeyFile(workerKey)
 
-        # Show the key in the status message for the unit.
+        # Show key in the status message.
         hookenv.status_set("active", f"WorkerKey: {workerKey}")
+
+    else:
+
+        hookenv.status_set("waiting", "worker-key not available for this unit.")
+
+    # Lets always log the message the master unit has, when there is one.
+    if hookenv.relation_get('message'):
 
         masterUnitName = os.environ['JUJU_REMOTE_UNIT']
 
