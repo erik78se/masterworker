@@ -15,5 +15,5 @@ tags:
 subordinate: false
 provides:
   master-application:
-    interface: simian
+    interface: exchange
     limit: 1

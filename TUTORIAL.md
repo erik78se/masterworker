@@ -1,32 +1,37 @@
-Tutorial: Relations with Juju
+# Tutorial: Relations with Juju
 Difficulty: Intermediate
+
 Author: Erik Lönroth
 
-What you will learn
+# What you will learn
 This tutorial will teach you about the fundamentals of relations in juju.
+We will use two existing example charms to learn this that implements a 
+master-worker pattern.
 
-You will:
+Get the code here: ```git clone https://github.com/erik78se/masterworker```
 
-* Learn what a relation is and how to use it in your charms. That is:
-  - The core relational-hooks: created,joined,changed,departed,broken
-  - How & when, to set and get data on a relation.
-  - ...
+You will in this tutorial:
+
+* Learn what a relation is and how to use it in your charms. 
+* Learn how the hook-tools drives relation data exchange.
+* Learn about relational-hooks and when they run.
+* How to debug/introspect a relation with hook-tools
 
 Lets get started!
 
-## Preparations
+# Preparations
 
-* You should have basic understanding of what juju, charms and models are.
-* You should have got through the Getting started chapter of official juju documentation.
+* You need a basic understanding of what juju, charms and models are.
+* You should have got through the getting started chapter of official juju documentation.
 * You need to be able to deploy charms to a cloud.
 * Make sure to have read: https://discourse.juju.is/t/the-lifecycle-of-charm-relations/1050
-* You need to have beginner level python programming skills.
+* You need beginner level python programming skills.
 
 # The hook-tools
-When working with relations, what goes on under the hood,
-is always a call to a juju hook-tool.
+When working with relations and juju in general, you should know, that what goes on under 
+the hood, is always calls to juju hook-tools.
 
-Run the command below to see what those tools provide: 
+Lets look at what those hook-tools are: 
 
 ``` $ juju help hook-tools```
 
@@ -74,76 +79,90 @@ Currently available charm hook tools are:
     unit-get                 print public-address or private-address
 </pre>
 
-Charms calls those hooks tools which is straight forward, 
-lets say in a charm 'hooks/start'
+
+## Hook contexts
+Charms calls the hooks-tools from within 'hook contexts'. 
+An example would be below, where we access the hook context by
+referencing the environment variable JUJU_CURRENT_HOOK to produce
+some logging.
 
 <pre>
 #!/bin/bash
+juju-log "This is the hook context: $JUJU_CURRENT_HOOK"
 status-set active "Ready"
 </pre>
 
-Pay some attention to the hooks: "relation-set" and "relation-get"
-Those tools are what is used to pass information between charms via relations.
+Debugging the hooks it its context is covered here. [link]
 
-## charmhelpers - python package
-When building charms with python, a package that wrapps the hook-tools exist: charmhelpers. 
+## Charmhelpers - the hook-tools python package
+When building charms with python, the python package charmhelpers provides a set of 
+functions that wrapps the hook-tools.
+Charmhelpers can be installed with <pre>pip install charmhelpers</pre> This can be 
+part of your install-hook, or even better, cloned into the "./lib/" 
+of your charm, making it part of your charm software. 
+Cloning charmhelpers into your charm is good practice since it isolates your charms 
+software requirements from other charms that may live on the same host.
 
-It can be installed with "pip install charmhelpers" and made part of your install-hook, 
-or better, cloned into the "./lib/" of your charm, making it part of your charm software. 
-This is a good practice since it isolates your charms requirements 
-from others on the same host.
-
-Its time to introduce the "master" and "worker" charms.
+Lets now introduce the "master" and "worker" charms which
+will be basis for this tutorial.
 
 # Master worker
-Clone the "masterworker" repo to your client.
+If you haven't already done this, clone the "masterworker" repo to your client.
 
 ```git clone https://github.com/erik78se/masterworker```
 
-The repo contains two charms: 
-* master
-* worker
+The repo contains two charms and parts of charmhelpers: 
 
-They implement as a pair a pattern: "The master-worker pattern".
+* ./master
+* ./worker
+* ./lib/hookenv.py
 
-## Describing the pattern
+Together they implement: A "master-worker pattern".
+
+In the metadata.yaml file I picked a name for the 
+relation interface: "keyexchange" which needs to be the same
+for both "master" and "worker". If the interface name
+don't match, juju will refuse to relate the charms.
+
+Interfaces are covered in detail here, but for now, the only thing
+to know about interfaces is that they need to have the same name for
+all charms participating in the relation.
+
+## Describing the master-worker pattern
 The master-worker pattern is an idea about a "master" handing out
-instructions to "workers". A master is often a single unit, 
+instructions to "workers". The master is often a single unit, 
 whereas the workers can be many.
 
+This is reflected in the metadata.yaml, where I put "limit: 1" to 
+indicate that the master should be a single unit. 
+Juju doen't enforce this, but it makes sense to the pattern.
+
 The information the master hands out can be unique to a single worker, 
-whereas some information is common to all workers.
+whereas some information is common to all.
 
 This pattern is useful in a lot of situation in computer science, 
-such as when implementing client-server solutions. 
-This is why I created this tutorial, since its a common occuring pattern.
+such as when implementing client-server solutions.
 
-Now deploy the bundle so we can get an idea of what it might look.
+Go ahead and deploy the bundle so we can see how it looks.
 
 ```juju deploy ./bundle.yaml``` 
 
-This deploys a master with two workers.
-
 [picture]
 
-The deployed charms are now active and related.
-A small piece of information has been passed between them.
+The deployed charms exchange two pieces of information as part of getting related:
 
-The hook-tools involved in passing that was "relation-set" and 
-"relation-get".
-
-The master "set" some values, and the "workers" have "get" them.
-
-Lets see when its triggered and the code for it.
+1. A unique worker-key for each worker is created by the master.
+2. A common 'message' from the master to all the workers.
 
 # Relational hooks
 
 When the command:
  ```juju relate master worker```
-is ran, it triggers a specific set of hooks on all units
-involved in the relation. Those are the "relational hooks". 
-The picture below shows how these relational hooks are called 
-and in what order.
+triggers a specific set of hooks on all units involved in the relation. 
+Those are the "relational hooks". The picture below shows how these 
+relational hooks are called and in what order.
+
+[picture]
 
 Here is the master:s "master-application-relation-joined":
 
@@ -153,77 +172,87 @@ and the worker:s "master-relation-changed":
 
 [code] -> https://github.com/erik78se/masterworker/blob/master/worker/hooks/master-relation-changed
 
-This is how data is exchanged in relations.
+The important code is the call to the hook-tools: 
+"relation-set" and "relation-get". Those tools are used to get/set information shared 
+between charms within the context of the hook they execute.
 
-Now, knowing the details of relational hooks is absolutely 
-FUNDAMENTAL to understand charms with relations.
+Lets see how the master can send out a "message" to the workers.
 
-If you have not studied this, juju will remain magic to you.
-If you want to become a Juju Jedi, you should grab a coffee and read 
-this carefully.
- 
-## The relation event cycle
-Below is the relational state machine. 
-[picture]
+### Triggering a relation-change.
+A change on a relation always trigger relation-change on relations, but we can
+trigger this from other hooks too. 
 
-
-### Exchanging information (relation-change) with units
-When a change on a relation occurs, E.g. a unit calls "relation-set", 
-ALL related units will get notified and fire the relation-change hook.
-     
-In a way, juju broadcasts relational data to all units when relation changes.
-
-The juju function/action, demonstrates this:
+The master implements an "action" to show this.
 
 https://github.com/erik78se/masterworker/blob/master/master/actions/broadcast-message
 
-If you run the action and watch the "juju debug-log" you will see all units
+If you run the action 'broadcast-message' and watch the "juju debug-log" you will see all units
 logging the message sent.
 
-Isn't this cool?
+This illustrates how juju sends the same data to all joined units whenever the data is 
+changed - also from outside of the relation.
 
 But, how do we send out unique data to units?
 
 ### Communicating unit unique data
-The data exchanged on a relation is a dictionary. So, one way to hand out 
-data for an individual units, is to have a key-name on the relation data
-composed of the unit-name.
+The data exchanged on a relation is a dictionary. 
 
-This way, we knows what data we should set or get, based on 
-the unit name which is always available to us.
+To hand out individual data, the master simply creates a composite key, made up by
+the unit-name+key-name and set the individual key for the remote unit.
 
 Look at the code in the worker: 
 https://github.com/erik78se/masterworker/blob/master/worker/hooks/master-relation-changed
 
+# Introspect the relation (debugging)
+We will often need to see what goes on on a relation, what data is set etc. Lets see how that is 
+done using the hook-tools.
 
-
-* Inspecting the relations
-
-$ juju run --unit master/0 "relation-ids master-application"
+<pre>
+juju run --unit master/0 "relation-ids master-application"
 master-application:0
+</pre>
 
-# Remove and add back the relation to see how the relation-id changes from
-# master-application:0 to master-application:1
-$ juju remove-relation master worker
-$ juju relate master worker
-
-$ juju run --unit master/0 'relation-ids master-application'
+Remove and add back the relation to see how the relation-id changes from master-application:0 to master-application:1
+<pre>
+juju remove-relation master worker
+juju relate master worker
+juju run --unit master/0 'relation-ids master-application'
 master-application:1
+</pre>
 
-$ juju run --unit worker/0 'relation-get -r master:1 - master/0'
+Look at all keys/data on the relation
+<pre>
+juju run --unit worker/0 'relation-get -r master:1 - master/0'
 egress-subnets: 172.31.27.134/32
 ingress-address: 172.31.27.134
 private-address: 172.31.27.134
 worker/0-worker-key: "5914"
 worker/1-worker-key: ADA1
-$ juju run --unit master/0 'relation-get -r master-application:1 - worker/0'
+
+juju run --unit master/0 'relation-get -r master-application:1 - worker/0'
 egress-subnets: 172.31.35.128/32
 ingress-address: 172.31.35.128
 private-address: 172.31.35.128
+</pre>
 
-# Get individial keys: (relation-get -r <relation-id> <key> <unit>, if "-", get all keys)
-$ juju run --unit master/0 "relation-get -r master-application:1 worker/1-worker-key master/0"
+Individial keys can be retrieved also:
+<pre>
+juju run --unit master/0 "relation-get -r master-application:1 worker/1-worker-key master/0"
 ADA1
+</pre>
+
+
+# A strategy for implementing a relation
+A general pattern for implementing a relation could be:
+
+* 'relation-set' is called on a local unit to push out some information. Do this in the
+relation-joined or relation-changed as much as possible.
+* 'relation-change' is triggered by the event on all units involved.
+* Use 'relation-get' on remote units in the 'relation-change' hook to retrieve the information.
+
+* Inspecting the relations
+
+
 
  * Adding more units
 
