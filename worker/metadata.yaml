@@ -13,6 +13,6 @@ tags:
   - misc
   - education
 subordinate: false
-requires:
-  master:
-    interface: exchange
+requires:                   # <--- Role
+  master:                   # <--- Relation name
+    interface: exchange     # <--- Interface name

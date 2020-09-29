@@ -2,13 +2,13 @@
 import os
 import sys
 sys.path.insert(0, os.path.join(os.environ['CHARM_DIR'], 'lib'))
-import hookenv
+from hookenv import log
 
 def config_changed():
     """
     We let the log know the message was changed.
     """
-    hookenv.log(" ========= hook: config-changed  ========")
+    log(" ========= hook: config-changed  ========")
 
 
 if __name__ == "__main__":

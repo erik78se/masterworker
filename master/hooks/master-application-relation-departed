@@ -2,7 +2,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.join(os.environ['CHARM_DIR'], 'lib'))
-import hookenv
+from hookenv import log, relation_set, relation_id
 
 def master_application_relation_departed():
     """
@@ -22,7 +22,17 @@ def master_application_relation_departed():
     hook: [name]-relation-broken
     """
 
-    hookenv.log(" ========= hook: master-application-relation-departed  ========")
+    log(" ========= hook: master-application-relation-departed  ========")
+
+    # Get the remote unit name so that we can use that for a composite key.
+    remoteUnitName=os.environ['JUJU_REMOTE_UNIT']
+
+    # Set a None value on the key (remove it from the dict)
+    relation_data = {f"{remoteUnitName}-worker-key": None}
+
+    # Update the relation data on the relation.
+    relation_set(relation_id(), relation_settings=relation_data)
+
 
 if __name__ == "__main__":
     master_application_relation_departed()

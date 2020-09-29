@@ -2,7 +2,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.join(os.environ['CHARM_DIR'], 'lib'))
-import hookenv
+from hookenv import log
 
 def master_relation_broken():
     """
@@ -20,8 +20,10 @@ def master_relation_broken():
     And, again, it’s important to internalise the fact that there may be multiple runtime relations in play with the
     same name, and that they’re independent: one -broken hook does not mean that every such relation is broken.
     """
-    hookenv.log(" ========= hook: master-relation-broken  ========")
+    log(" ========= hook: master-relation-broken  ========")
 
+    # Remove the WORKERKEY.file
+    os.remove("WORKERKEY.file")
 
 if __name__ == "__main__":
     master_relation_broken()

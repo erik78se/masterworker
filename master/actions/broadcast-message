@@ -2,7 +2,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.join(os.environ['CHARM_DIR'], 'lib'))
-import hookenv
+from hookenv import log, relation_ids, function_get, relation_set
 
 # This action "broadcasts" a message by setting the message key value on
 # the master-application relation. All related worker units picks this up
@@ -13,15 +13,14 @@ import hookenv
 
 # $ juju run-action master/0 broadcast-message message="Hello World" --wait
 
-hookenv.log(" ========= action: broadcase-message  ========")
+log(" ========= action: broadcase-message  ========")
 
-relation_id = hookenv.relation_ids('master-application')[0]
+relation_id = relation_ids('master-application')[0]
 
 # Get the message from the juju function/action
-message = hookenv.function_get('message')
+message = function_get('message')
 
 relation_data = { 'message': message }
 
 # ... set the relational data.
-hookenv.relation_set(relation_id,
-                     relation_settings=relation_data)
+relation_set(relation_id, relation_settings=relation_data)

@@ -2,7 +2,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.join(os.environ['CHARM_DIR'], 'lib'))
-import hookenv
+from hookenv import log, relation_ids, related_units, status_set
 
 def master_application_relation_changed():
     """
@@ -20,20 +20,20 @@ def master_application_relation_changed():
                       (joined)->
                                 (changed)->
     """
-    hookenv.log(" ========= hook: master-application-relation-changed  ========")
+    log(" ========= hook: master-application-relation-changed  ========")
 
     # For the master-application relation, get all relation_ids
     # TODO: dont use the name since we are in a relation
-    rel_ids = hookenv.relation_ids('master-application')
+    rel_ids = relation_ids('master-application')
 
     # Get the first one since we expect to only have one master-application relation.
     master_application_rel_id = rel_ids[0]
 
     # Get all the related units
-    units = hookenv.related_units(master_application_rel_id)
+    units = related_units(master_application_rel_id)
 
     # Show how many related units we have.
-    hookenv.status_set("active", f"Related Workers: {len(units)}")
+    status_set("active", f"Related Workers: {len(units)}")
             
 if __name__ == "__main__":
     master_application_relation_changed()

@@ -13,7 +13,7 @@ tags:
   - misc
   - education
 subordinate: false
-provides:
-  master-application:
-    interface: exchange
+provides:                   # <--- Role
+  master-application:       # <--- Relation name
+    interface: exchange     # <--- Interface name
     limit: 1
