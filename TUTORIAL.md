@@ -178,8 +178,8 @@ master and worker charms.
 The reason for this is that we can't know in "relation-created" or "relation-joined" 
 that the other end of the relation has set relational data yet. 
 
-Only a few relation keys (private-address, ingress-address, egress-subnets) are 
-available at these stages and its only in *relation-change* that relational data should be expected to be available. 
+Only a few relation keys (such as private-address) are available at these early stages and 
+its only in *relation-change* that your own relational data should be expected to be available. 
 
 Apart from these code considerations, all we do to manage data is via: "relation-set" and "relation-get".
 
