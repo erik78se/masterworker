@@ -291,9 +291,7 @@ the programmer should:
   1. Do whatever is needed to remove a departing unit from the service e.g. 
   perform reconfiguration, removing databases etc. 
 
-Lets see how the master and worker charms deal with this in our example.
-
-Lets walk through this by removing a worker. Follow the events with *juju debug-log*.
+Lets walk this through by removing a worker. Follow the events with *juju debug-log*.
 
 ```juju remove-unit worker/1```
 
