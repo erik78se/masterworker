@@ -263,7 +263,7 @@ juju run --unit master/0 "relation-ids master-application"
 master-application:0
 </pre>
 
-Removing and adding back a relation show how the relation-id changes 
+Removing and adding back a relation shows how the relation-id changes 
 from master-application:0 to master-application:1
 <pre>
 juju remove-relation master worker
