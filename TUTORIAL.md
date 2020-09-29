@@ -354,7 +354,7 @@ Lets finish up by removing all the relations:
 
 Inspect the relations and look for the file WORKERKEY.file on the remaining worker units (they are gone!).
 
-You will also see that the master has finally ran its "relation-broken" hook.
+You will also see in the juju debug-log that the master has finally ran its "relation-broken" hook.
 
 Congratulations, you have completed the tutorial on juju relations!
 
