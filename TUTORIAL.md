@@ -211,8 +211,14 @@ The worker access its individual **worker-key** in the
 
 *./worker/hooks/master-relation-changed*
 <pre>
-    # Get the key with our worker name on it, e.g.: 'worker/0-worker-key'
-    workerKey = relation_get(f"{localunitname}-worker-key")
+    localunitname = os.environ['JUJU_UNIT_NAME']
+
+    ## If we have data that belong to this unit
+    if relation_get(f"{localunitname}-worker-key"):
+
+        # Get the worker-key with our unit name on it, e.g.: 'worker/0-worker-key'
+        workerKey = relation_get(f"{localunitname}-worker-key")
+
 </pre>
 
 Pretty straight forward, right?

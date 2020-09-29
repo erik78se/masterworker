@@ -35,7 +35,7 @@ def master_relation_changed():
     ## If we have data that belong to this unit
     if relation_get(f"{localunitname}-worker-key"):
 
-        # Get the key with our worker name on it, e.g.: 'worker/0-worker-key'
+        # Get the worker-key with our unit name on it, e.g.: 'worker/0-worker-key'
         workerKey = relation_get(f"{localunitname}-worker-key")
 
         # As a dummy operation, we create a file on the unit with the key.
