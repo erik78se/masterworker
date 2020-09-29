@@ -185,6 +185,7 @@ Data exchanged on juju relations is a dictionary.
 So to pass individual data to workers, the master creates a composite dictionary key, 
 made up by the joining remote **unit-name + key-name** and *relation-set* data for that composite key.
 
+*./master/hooks/master-appliation-relation-joined*
 <pre>
     # Generate a worker-key
     workerKey = generateWorkerKey()
@@ -201,6 +202,8 @@ made up by the joining remote **unit-name + key-name** and *relation-set* data f
 
 The worker access its individual **worker-key** in the
  [master-relation-changed] hook:
+
+*./worker/hooks/master-relation-changed*
 <pre>
     # Get the key with our worker name on it, e.g.: 'worker/0-worker-key'
     workerKey = relation_get(f"{localunitname}-worker-key")
@@ -216,6 +219,7 @@ we can trigger this from other non relational hooks since we can access the rela
 
 Look at the juju-action [broadcast-message] to show how this is achieved:
 
+*./master/actions/broadcast-message*
 <pre>
 # Assume that the first relation_id is the only and use that.
 relation_id = relation_ids('master-application')[0]
