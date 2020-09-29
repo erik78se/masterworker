@@ -167,15 +167,21 @@ What happens now, is that juju triggers a specific set of hooks on all units inv
 
 [picture]
 
-The master set data on the relation in [master-application-relation-joined]
+The master set data in [master-application-relation-joined]
 
-The worker get it in [master-relation-changed]
+The worker get data in [master-relation-changed]
 
 A best practice here, is to use **relation-joined** and/or **relation-created** to set
 initial data and **relation-changed** to retrieve them just as we have done in the 
-master and worker charms.
+master and worker charms. 
 
-As you see, all we do is calling hook-tools: "relation-set" and "relation-get".
+The reason for this is that we can't know in "relation-created" or "relation-joined" 
+that the other end of the relation has set relational data yet. 
+
+Only a few relation keys (private-address, ingress-address, egress-subnets) are 
+available at these stages and its only in *relation-change* that relational data should be expected to be available. 
+
+Apart from these code considerations, all we do to manage data is via: "relation-set" and "relation-get".
 
 Now, lets look a bit closer on how the master sends out data that is unique to our worker units.
 
