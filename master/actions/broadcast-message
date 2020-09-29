@@ -15,6 +15,7 @@ from hookenv import log, relation_ids, function_get, relation_set
 
 log(" ========= action: broadcase-message  ========")
 
+# Assume that the first relation_id is the only and use that.
 relation_id = relation_ids('master-application')[0]
 
 # Get the message from the juju function/action

@@ -33,14 +33,14 @@ def master_application_relation_joined():
 
     log(" ========= hook: master-application-relation-joined  ========")
 
-    # Generate a key
-    _wk = generateWorkerKey()
+    # Generate a worker-key
+    workerKey = generateWorkerKey()
 
     # Get the remote unit name so that we can use that for a composite key.
     remoteUnitName=os.environ['JUJU_REMOTE_UNIT']
 
     # Assemble the relation data.
-    relation_data = { f"{remoteUnitName}-worker-key": _wk }
+    relation_data = { f"{remoteUnitName}-worker-key": workerKey }
 
     # Set the relation data on the relation.
     relation_set(relation_id(), relation_settings=relation_data )
