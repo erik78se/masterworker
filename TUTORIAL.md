@@ -299,7 +299,7 @@ The master (and worker/1) gets notified of the event and executes their
 respective *relation-departed* hook.
 
 ### Departing - as it happens on the master
-The master cleans up the relational data associated with the departing (remote) unit. 
+The **master** cleans up the relational data associated with the departing (remote) unit. 
 *./master/hooks/master-application-relation-departed*
 <pre>
     # Set a None value on the key (removes it from the relation data dictionary)
