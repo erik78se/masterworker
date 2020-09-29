@@ -3,21 +3,21 @@ Difficulty: Intermediate
 
 Author: Erik Lönroth
 
-# What you will learn
-This tutorial will teach you about the fundamentals of relations in juju.
+## What you will learn
+This tutorial will teach you implementing a simple relation in juju.
 We will use two existing charms that implements a master-worker pattern and study
 that code for reference.
 
 Get the code here: ```git clone https://github.com/erik78se/masterworker```
 
-You will in this tutorial:
+You will:
 
 * Learn what a relation is and how to use it in your charms. 
 * Learn more about hooks and how hook-tools drives relation data exchanges.
 * Learn about relational-hooks and when they run.
 * How to debug/introspect a relation with hook-tools
 
-# Preparations
+## Preparations
 
 * You need a basic understanding of what juju, charms and models are.
 * You should have got through the getting started chapter of official juju documentation.
