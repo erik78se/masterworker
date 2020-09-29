@@ -15,14 +15,8 @@ def master_relation_joined():
 
     You should not depend upon any other relation settings in the -joined hook because they’re not guaranteed to be
     present; if you need more information you should wait for a -changed hook that presents the right information.
-
-    juju relate master worker
-         ->(created)->
-                      (joined)->
-                                (changed)->
-
-    For our charm, we just access it to do some informative logging.
     """
+
     log(" ========= hook: master-relation-joined  ========")
 
     remoteUnit = os.environ.get('JUJU_REMOTE_UNIT', None) # remote_unit()

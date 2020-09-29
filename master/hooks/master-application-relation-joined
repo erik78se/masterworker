@@ -2,7 +2,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.join(os.environ['CHARM_DIR'], 'lib'))
-from hookenv import relation_set, log, relation_id
+from hookenv import relation_set, relation_get, log, relation_id
 import random
 
 def generateWorkerKey():
@@ -21,14 +21,6 @@ def master_application_relation_joined():
 
     You should not depend upon any other relation settings in the -joined hook because they’re not guaranteed to be
     present; if you need more information you should wait for a -changed hook that presents the right information.
-
-    $ juju relate master worker
-         ->(created)->
-                      (joined)->
-                                (changed)->
-
-    Our charm generates a unique key here, based on the remote unit name
-    and sets it on the relation.
     """
 
     log(" ========= hook: master-application-relation-joined  ========")
@@ -37,7 +29,12 @@ def master_application_relation_joined():
     workerKey = generateWorkerKey()
 
     # Get the remote unit name so that we can use that for a composite key.
-    remoteUnitName=os.environ['JUJU_REMOTE_UNIT']
+    remoteUnitName = os.environ.get('JUJU_REMOTE_UNIT', None) # remote_unit()
+
+    # Get the worker remote unit private-address for logging
+    workerAddr = relation_get('private-address', unit=remoteUnitName)
+
+    log(f"Joined with WORKER at private-address: {workerAddr}")
 
     # Assemble the relation data.
     relation_data = { f"{remoteUnitName}-worker-key": workerKey }

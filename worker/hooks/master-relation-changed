@@ -22,11 +22,6 @@ def master_relation_changed():
     changes its settings, the hook will be run again.
 
     The settings that you can get, and that you should set, are determined by the relation’s interface.
-
-    juju relate master worker
-         ->(created)->
-                      (joined)->
-                                (changed)->
     """
     log(" ========= hook: master-relation-changed  ========")
 

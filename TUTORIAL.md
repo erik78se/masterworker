@@ -171,17 +171,18 @@ The master set data in [master-application-relation-joined]
 
 The worker get data in [master-relation-changed]
 
-A best practice here, is to use **relation-joined** and/or **relation-created** to set
-initial data and **relation-changed** to retrieve them just as we have done in the 
+A best practice here, is to use *relation-joined* and/or *relation-created* to set
+initial data and *relation-changed* to retrieve them just as we have done in the 
 master and worker charms. 
 
-The reason for this is that we can't know in "relation-created" or "relation-joined" 
-that the other end of the relation has set relational data yet. 
+The reason for this is that we can't know in *relation-created* or *relation-joined* 
+that the other end of the relation has set any relational data yet. 
 
-Only a few relation keys (such as private-address) are available at these early stages and 
-its only in *relation-change* that your own relational data should be expected to be available. 
+Only a few relation keys (such as, the remote unit 'private-address') are available at these early stages
+(Available in *relation-joined*) and its not until in *relation-change* that your own relational data should be 
+expected to be available. 
 
-Apart from these code considerations, all we do to manage data is via: "relation-set" and "relation-get".
+Apart from these considerations, all we do to manage data is via: "relation-set" and "relation-get".
 
 Now, lets look a bit closer on how the master sends out data that is unique to our worker units.
 
@@ -193,11 +194,18 @@ made up by the joining remote **unit-name + key-name** and *relation-set* data f
 
 *./master/hooks/master-appliation-relation-joined*
 <pre>
+    log(" ========= hook: master-application-relation-joined  ========")
+
     # Generate a worker-key
     workerKey = generateWorkerKey()
 
     # Get the remote unit name so that we can use that for a composite key.
-    remoteUnitName=os.environ['JUJU_REMOTE_UNIT']
+    remoteUnitName = os.environ.get('JUJU_REMOTE_UNIT', None) # remote_unit()
+
+    # Get the worker remote unit private-address for logging
+    workerAddr = relation_get('private-address', unit=remoteUnitName)
+
+    log(f"Joined with WORKER at private-address: {workerAddr}")
 
     # Assemble the relation data.
     relation_data = { f"{remoteUnitName}-worker-key": workerKey }
@@ -206,11 +214,13 @@ made up by the joining remote **unit-name + key-name** and *relation-set* data f
     relation_set(relation_id(), relation_settings=relation_data )
 </pre>
 
-The worker access its individual **worker-key** in the
+The worker access its individual 'worker-key' in the
  [master-relation-changed] hook:
 
 *./worker/hooks/master-relation-changed*
 <pre>
+    log(" ========= hook: master-relation-changed  ========")
+    
     localunitname = os.environ['JUJU_UNIT_NAME']
 
     ## If we have data that belong to this unit
