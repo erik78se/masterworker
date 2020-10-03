@@ -112,7 +112,7 @@ Note: You could of course deploy the bundle instead:
 juju deploy ./bundle.yaml
 ```
 
-[picture]
+![masterworker-deployed.png][masterworker-deployed-image]
 
 # Implementation
 So, lets go through the steps required to produce the relation between these charms.
@@ -165,7 +165,7 @@ Lets follow the events following the call to juju relate:
 What happens now, is that juju triggers a specific set of hooks on all units involved in the relation called
  "relational hooks". The picture below shows how these hooks are called and in what order when a relation is formed.
 
-[picture]
+![juju-hook-state-machine.png][juju-hook-state-machine-image]
 
 The master set data in [master-application-relation-joined]
 
@@ -343,7 +343,7 @@ juju run --unit worker/0 'relation-get -r master:1 - master/0'
 egress-subnets: 172.31.27.134/32
 ingress-address: 172.31.27.134
 private-address: 172.31.27.134
-worker/0-worker-key: "5914"
+worker/0-worker-key: 5914
 </pre>
 
 ### Departing - as it happens on the worker
@@ -394,3 +394,5 @@ Congratulations, you have completed the tutorial on juju relations!
 [master-application-relation-joined]: https://github.com/erik78se/masterworker/blob/master/master/hooks/master-application-relation-joined
 [master-relation-changed]: https://github.com/erik78se/masterworker/blob/master/worker/hooks/master-relation-changed
 [broadcast-message]: https://github.com/erik78se/masterworker/blob/master/master/actions/broadcast-message
+[masterworker-deployed-image]: masterworker-deployed.png
+[juju-hook-state-machine-image]: juju-hook-state-machine.png

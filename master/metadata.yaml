@@ -16,4 +16,4 @@ subordinate: false
 provides:                   # <--- Role
   master-application:       # <--- Relation name
     interface: exchange     # <--- Interface name
-    limit: 1
+    limit: 1                # <--- Only handle 1 relation.
