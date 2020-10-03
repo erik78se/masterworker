@@ -153,7 +153,7 @@ information in our invented *exchange* interface with the worker.
 
 So, this data is all what we will "get/set" in the relation. 
 
-This is all done as part of the "relational hooks" that we will look into now.
+This is all done as part of the "relation hooks" that we will look into now.
 
 ## Step 3. Use the relational hooks to set/get data.
 
