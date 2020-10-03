@@ -14,7 +14,7 @@ You will:
 
 * Learn what a relation is and how to use it in your charms. 
 * Learn more about hooks and how hook-tools drives relation data exchanges.
-* Learn about relational-hooks and when they run.
+* Learn about relation-hooks and when they run.
 * How to debug/introspect a relation with hook-tools
 
 ## Preparations
@@ -118,10 +118,10 @@ juju deploy ./bundle.yaml
 So, lets go through the steps required to produce the relation between these charms.
 
 The first step in implementing the relation between two charms starts with defining the
-relational [endpoint] for the charms and its interface name. This is done in metadata.yaml
+relation [endpoint] for the charms and its interface name. This is done in metadata.yaml
 
 ## Step 1. Define an endpoint and select an interface name
-A starting point to create a relational charm, is to modify the the metadata.yaml file. 
+A starting point to create a relation charm, is to modify the the metadata.yaml file. 
 We do this for both master and worker since they have different roles in the relation.
 
 The endpoints for the master and worker are defined as below.
@@ -155,7 +155,7 @@ So, this data is all what we will "get/set" in the relation.
 
 This is all done as part of the "relation hooks" that we will look into now.
 
-## Step 3. Use the relational hooks to set/get data.
+## Step 3. Use the relation hooks to set/get data.
 
 Lets follow the events following the call to juju relate:
  ```
@@ -176,10 +176,10 @@ initial data and *relation-changed* to retrieve them just as we have done in the
 master and worker charms. 
 
 The reason for this is that we can't know in *relation-created* or *relation-joined* 
-that the other end of the relation has set any relational data yet. 
+that the other end of the relation has set any relation data yet. 
 
 Only a few relation keys (such as, the remote unit 'private-address') are available at these early stages
-(Available in *relation-joined*) and its not until in *relation-change* that your own relational data should be 
+(Available in *relation-joined*) and its not until in *relation-change* that your own relation data should be 
 expected to be available. 
 
 Apart from these considerations, all we do to manage data is via: "relation-set" and "relation-get".
@@ -233,11 +233,11 @@ The worker access its individual 'worker-key' in the
 
 Pretty straight forward, right?
 
-Lets explore further how we use an alternative way to send out a message to the workers outside of the relational hooks.
+Lets explore further how we use an alternative way to send out a message to the workers outside of the relation hooks.
 
 ### Triggering a relation-change via a juju action.
 So, juju takes care of making sure that *any* change on a relation triggers the hook *relation_name-relation-change* on the remote units, 
-we can trigger this from other non relational hooks since we can access the relations by their id:s. 
+we can trigger this from other non relation hooks since we can access the relations by their id:s. 
 
 Look at the juju-action [broadcast-message] to show how this is achieved:
 
@@ -251,7 +251,7 @@ message = function_get('message')
 
 relation_data = { 'message': message }
 
-# ... set the relational data.
+# ... set the relation data.
 relation_set(relation_id, relation_settings=relation_data)
 </pre>
 
@@ -311,8 +311,8 @@ ADA1
 The last step to implement in juju relation is taking case of when a unit departs from a relation, 
 the programmer should:
  
-  1. Remove any relational data associated with the departing unit from 
-  the relational dictionary with the *relation-set* hook tool.
+  1. Remove any relation data associated with the departing unit from 
+  the relation dictionary with the *relation-set* hook tool.
    
   1. Do whatever is needed to remove a departing unit from the service e.g. 
   perform reconfiguration, removing databases etc. 
@@ -325,7 +325,7 @@ The master (and worker/1) gets notified of the event and executes their
 respective *relation-departed* hook.
 
 ### Departing - as it happens on the master
-The **master** cleans up the relational data associated with the departing (remote) unit. 
+The **master** cleans up the relation data associated with the departing (remote) unit. 
 *./master/hooks/master-application-relation-departed*
 <pre>
     # Set a None value on the key (removes it from the relation data dictionary)
@@ -349,7 +349,7 @@ worker/0-worker-key: 5914
 ### Departing - as it happens on the worker
 
 On the **worker** side of the relation, the worker didn't set any relation data, 
-so it doesn't have to do anything to clean up in its relational data.
+so it doesn't have to do anything to clean up in its relation data.
 
 But, the worker should remove the *WORKERKEY.file* that it created on the 
 host as part of joining the relation.
