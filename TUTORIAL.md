@@ -163,7 +163,7 @@ Lets follow the events following the call to juju relate:
 ```
 
 What happens now, is that juju triggers a specific set of hooks on all units involved in the relation called
- "relational hooks". The picture below shows how these hooks are called and in what order when a relation is formed.
+ "relation hooks". The picture below shows how these hooks are called and in what order when a relation is formed.
 
 ![juju-hook-state-machine.png][juju-hook-state-machine-image]
 
